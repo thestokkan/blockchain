@@ -115,6 +115,18 @@ public class BlockChain {
    * @return true if the blockchain is considered valid, otherwise false
    */
   public boolean verify() {
-    return true;
+
+    boolean validPrevHash = true;
+    for (int i = 1; i < blocks.size(); i++) {
+      if (!blocks.get(i).prevHash.equals(blocks.get(i - 1).hash)) {
+        validPrevHash = false;
+        break;
+      }
+    }
+
+    boolean validTransactionHash = blocks.stream().flatMap(b -> b.transactionList.stream())
+                                         .allMatch(t -> t.hash.equals(t.calculateHash()));
+
+    return validPrevHash && validTransactionHash;
   }
 }
