@@ -1,79 +1,93 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BlockChain {
-    List<Block> blocks = new ArrayList<>();
+  List<Block> blocks = new ArrayList<>();
 
-    public BlockChain() {
-        Block genesis = new Block(2);
-        blocks.add(genesis);
-    }
+  public BlockChain() {
+    Block genesis = new Block(2);
+    blocks.add(genesis);
+  }
 
-    @Override
-    public String toString() {
-        return "BlockChain{" +
-                "blocks=" + blocks +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "BlockChain{" + "blocks=" + blocks + '}';
+  }
 
-    public Block getLatestBlock() {
-        return blocks.get(blocks.size() - 1);
-    }
+  public Block getLatestBlock() {
+    return blocks.get(blocks.size() - 1);
+  }
 
-    public void addBlock(Block nextBlock) {
-        nextBlock.prevHash = this.getLatestBlock().hash;
-        nextBlock.hash = nextBlock.calculateHash();
-        this.blocks.add(nextBlock);
-    }
+  public void addBlock(Block nextBlock) {
+    nextBlock.prevHash = this.getLatestBlock().hash;
+    nextBlock.hash = nextBlock.calculateHash();
+    this.blocks.add(nextBlock);
+  }
 
-    /**
-     * The balance for an address is total amount of transactions where address is receiver (to) minus
-     * the total amount where address is sender (from)
-     *
-     * @param address the address to calculate balance for
-     * @return the current balance
-     */
-    public int calculateBalance(String address) {
-       return 0;
-    }
+  /**
+   * The balance for an address is total amount of transactions where address is receiver (to)
+   * minus
+   * the total amount where address is sender (from)
+   *
+   * @param address the address to calculate balance for
+   * @return the current balance
+   * <p>
+   * persons.stream().map(p -> { return p.getName() });
+   */
+  public int calculateBalance(String address) {
 
-    /**
-     * List blocks by total transaction volume - i.e. ignoring to/from (sum of amount).
-     * Sorted by highest volume first.
-     * The string returned should be formatted as Block #x where x is the index of the block in the chain
-     *
-     * @param limit how many entries to return
-     * @return formatted list of blocks with the highest volume
-     */
-    public List<String> calculateTopTransactionVolume(int limit) {
-        return Collections.emptyList();
-    }
+    int sumIn = blocks.stream().flatMap(b -> b.transactionList.stream())
+                      .filter(t -> address.equals(t.to)).mapToInt(t -> t.amount).sum();
 
-    public long uniqueAddresses() {
-        return 0;
-    }
+    int sumOut = blocks.stream().flatMap(b -> b.transactionList.stream())
+                       .filter(t -> address.equals(t.from)).mapToInt(t -> t.amount).sum();
 
-    public String calculateMostValuableAddress() {
-        return "";
-    }
+    return sumIn - sumOut;
+  }
 
-    /**
-     * Calculate average tx. amount for blocks with difficulty >= 2
-     *
-     * @return The average transaction amount
-     */
-    public double calculateAverageTxAmount(int minDifficultyLevel) {
-        return 0.0;
-    }
+  /**
+   * List blocks by total transaction volume - i.e. ignoring to/from (sum of amount).
+   * Sorted by highest volume first.
+   * The string returned should be formatted as Block #x where x is the index of the block in
+   * the chain
+   *
+   * @param limit how many entries to return
+   * @return formatted list of blocks with the highest volume
+   */
+  public List<String> calculateTopTransactionVolume(int limit) {
 
-    /**
-     * 1. The {@link Block#prevHash} of each block must be the same as the {@link Block#hash}of the previous block in
-     * the chain - except the first (genesis) block (it has no previous block).
-     * 2. The hash field of every transaction must be verified - it must be equal to the value returned by the
-     * {@link Transaction#calculateHash()} method.
-     *
-     * @return true if the blockchain is considered valid, otherwise false
-     */
-    public boolean verify() {
-        return true;
-    }
+
+    return Collections.emptyList();
+  }
+
+  public long uniqueAddresses() {
+    return 0;
+  }
+
+  public String calculateMostValuableAddress() {
+    return "";
+  }
+
+  /**
+   * Calculate average tx. amount for blocks with difficulty >= 2
+   *
+   * @return The average transaction amount
+   */
+  public double calculateAverageTxAmount(int minDifficultyLevel) {
+    return 0.0;
+  }
+
+  /**
+   * 1. The {@link Block#prevHash} of each block must be the same as the {@link Block#hash}of
+   * the previous block in
+   * the chain - except the first (genesis) block (it has no previous block).
+   * 2. The hash field of every transaction must be verified - it must be equal to the value
+   * returned by the
+   * {@link Transaction#calculateHash()} method.
+   *
+   * @return true if the blockchain is considered valid, otherwise false
+   */
+  public boolean verify() {
+    return true;
+  }
 }
