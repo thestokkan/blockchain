@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BlockChain {
@@ -68,7 +65,19 @@ public class BlockChain {
   }
 
   public long uniqueAddresses() {
-    return 0;
+    Set<String> unique =
+    blocks.stream().flatMap(b -> b.transactionList.stream())
+            .map(t -> t.to)
+            .collect(Collectors.toSet());
+
+    Set<String> uniqueOut =
+            blocks.stream().flatMap(b -> b.transactionList.stream())
+                  .map(t -> t.from)
+                  .collect(Collectors.toSet());
+
+    unique.addAll(uniqueOut);
+
+    return unique.size();
   }
 
   public String calculateMostValuableAddress() {
