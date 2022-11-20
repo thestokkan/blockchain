@@ -36,14 +36,10 @@ public class BlockChain {
    * persons.stream().map(p -> { return p.getName() });
    */
   public int calculateBalance(String address) {
-
-    int sumIn = blocks.stream().flatMap(b -> b.transactionList.stream())
-                      .filter(t -> address.equals(t.to)).mapToInt(t -> t.amount).sum();
-
-    int sumOut = blocks.stream().flatMap(b -> b.transactionList.stream())
-                       .filter(t -> address.equals(t.from)).mapToInt(t -> t.amount).sum();
-
-    return sumIn - sumOut;
+    return blocks.stream().flatMap(b -> b.transactionList.stream())
+          .filter(t -> address.equals(t.to) || address.equals(t.from))
+          .mapToInt(t -> address.equals(t.to) ? t.amount : -t.amount)
+          .sum();
   }
 
   /**
