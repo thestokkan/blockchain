@@ -98,7 +98,10 @@ public class BlockChain {
    * @return The average transaction amount
    */
   public double calculateAverageTxAmount(int minDifficultyLevel) {
-    return 0.0;
+    return blocks.stream().filter(b -> b.difficulty >= minDifficultyLevel)
+            .flatMapToDouble(b -> b.transactionList.stream().mapToDouble(t -> t.amount))
+            .average()
+            .orElse(0);
   }
 
   /**
