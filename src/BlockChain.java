@@ -1,5 +1,6 @@
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BlockChain {
   List<Block> blocks = new ArrayList<>();
@@ -65,19 +66,10 @@ public class BlockChain {
   }
 
   public Set<String> uniqueAddresses() {
-    Set<String> unique =
-    blocks.stream().flatMap(b -> b.transactionList.stream())
-            .map(t -> t.to)
-            .collect(Collectors.toSet());
 
-    Set<String> uniqueOut =
-            blocks.stream().flatMap(b -> b.transactionList.stream())
-                  .map(t -> t.from)
-                  .collect(Collectors.toSet());
-
-    unique.addAll(uniqueOut);
-
-    return unique;
+    return blocks.stream().flatMap(b -> b.transactionList.stream())
+          .flatMap(t -> Stream.of(t.to, t.from))
+          .collect(Collectors.toSet());
   }
 
   public String calculateMostValuableAddress() {
