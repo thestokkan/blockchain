@@ -1,4 +1,7 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class BlockChain {
@@ -56,8 +59,12 @@ public class BlockChain {
    */
   public List<String> calculateTopTransactionVolume(int limit) {
 
-
-    return Collections.emptyList();
+    return blocks.stream().map(b -> Arrays.asList(blocks.indexOf(b),
+                                                  b.transactionList.stream().mapToInt(t -> t.amount)
+                                                                   .sum()))
+                 .sorted(Comparator.comparingInt(l -> -l.get(1))).limit(limit)
+                 .map(l -> String.format("Block #%d = %d", l.get(0), l.get(1)))
+                 .collect(Collectors.toList());
   }
 
   public long uniqueAddresses() {
