@@ -17,8 +17,8 @@ public class Main {
         List<String> blocksByTransactionVolume = blockChain.calculateTopTransactionVolume(3);
         System.out.println(blocksByTransactionVolume); // [Block #2 = 200, Block #1 = 130, Block #3 = 30]
 
-        long uniqueAddresses = blockChain.uniqueAddresses();
-        System.out.println("Unique addresses: " + uniqueAddresses); // Unique addresses: 5
+        long numberOfuniqueAddresses = blockChain.uniqueAddresses().size();
+        System.out.println("Unique addresses: " + numberOfuniqueAddresses); // Unique addresses: 5
 
         String richestAddress = blockChain.calculateMostValuableAddress();
         System.out.println("The richest address is: " + richestAddress); // The richest address is: a

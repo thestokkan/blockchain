@@ -64,7 +64,7 @@ public class BlockChain {
                  .collect(Collectors.toList());
   }
 
-  public long uniqueAddresses() {
+  public Set<String> uniqueAddresses() {
     Set<String> unique =
     blocks.stream().flatMap(b -> b.transactionList.stream())
             .map(t -> t.to)
@@ -77,11 +77,19 @@ public class BlockChain {
 
     unique.addAll(uniqueOut);
 
-    return unique.size();
+    return unique;
   }
 
   public String calculateMostValuableAddress() {
-    return "";
+
+    Set<String> uniqueAddresses = uniqueAddresses();
+    Map<String, Integer> balances = new HashMap<>();
+
+    for (String address : uniqueAddresses) {
+      balances.put(address, calculateBalance(address));
+    }
+
+    return Collections.max(balances.entrySet(), Map.Entry.comparingByValue()).getKey();
   }
 
   /**
