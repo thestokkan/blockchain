@@ -69,7 +69,6 @@ public class BlockChain {
   }
 
   public String calculateMostValuableAddress() {
-
     Set<String> uniqueAddresses = uniqueAddresses();
     Map<String, Integer> balances = new HashMap<>();
 
